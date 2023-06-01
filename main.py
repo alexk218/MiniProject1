@@ -13,17 +13,22 @@ data = pd.read_csv('training_dataset.csv')
 best_split = find_best_attribute(data, 'willwait')
 print("Best Attribute to split on: ", best_split)
 
-# Initialize LabelEncoder
+# Initialize LabelEncoder...
 # LabelEncoder is a utility class to help normalize labels such that they contain only values between 0 and n_classes-1
 le = preprocessing.LabelEncoder()
 
-# Convert all categorical columns to numeric
+# Converts all categorical columns to numeric...
+# By iterating over each column, apply the label encoding, and assign the result back to the column
 for col in data.columns:
     data[col] = le.fit_transform(data[col])
 
-# Split the dataset into feature vectors (X) and target variable (y)
-X = data.iloc[:, :-1]
-y = data.iloc[:, -1]
+# Separate feature columns and target column
+feature_columns = data.columns[:-1]  # all columns except the last one
+target_column = data.columns[-1]  # the last column
+
+# Splits dataset into feature vectors (X) and target variable (y)
+X = data[feature_columns]
+y = data[target_column]
 
 # Train the classifier to build the tree (using entropy as the criterion)
 dtc = tree.DecisionTreeClassifier(criterion="entropy")
@@ -33,9 +38,8 @@ dtc.fit(X, y)
 y_pred = dtc.predict(X)
 print(classification_report(y, y_pred))
 
-# Visualize the decision tree
+# Visualize the decision tree using Graphviz
 # export_graphviz exports a decision tree in DOT format
-# This function generates a GraphViz representation of the decision tree, which is then written into out_file
 dot_data = tree.export_graphviz(dtc, out_file=None,
                                 feature_names=data.columns[:-1],
                                 class_names=le.classes_,
