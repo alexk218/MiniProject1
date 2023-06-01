@@ -1,0 +1,53 @@
+<html>
+<head>
+<title>utils.py</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #0033b3;}
+.s1 { color: #080808;}
+.s2 { color: #8c8c8c; font-style: italic;}
+.s3 { color: #1750eb;}
+</style>
+</head>
+<body bgcolor="#ffffff">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+utils.py</font>
+</center></td></tr></table>
+<pre><span class="s0">import </span><span class="s1">numpy </span><span class="s0">as </span><span class="s1">np</span>
+
+<span class="s2"># Function to calculate entropy of a given sample set</span>
+<span class="s0">def </span><span class="s1">calculate_entropy(y):</span>
+    <span class="s1">log2 = </span><span class="s0">lambda </span><span class="s1">x: np.log(x) / np.log(</span><span class="s3">2</span><span class="s1">)</span>
+    <span class="s1">unique_labels = np.unique(y)</span>
+    <span class="s1">entropy = </span><span class="s3">0</span>
+    <span class="s0">for </span><span class="s1">label </span><span class="s0">in </span><span class="s1">unique_labels:</span>
+        <span class="s1">count = len(y[y == label])</span>
+        <span class="s1">p = count / len(y)</span>
+        <span class="s1">entropy += -p * log2(p)</span>
+    <span class="s0">return </span><span class="s1">entropy</span>
+
+<span class="s2"># Calculate entropy of a given split</span>
+<span class="s0">def </span><span class="s1">calculate_entropy_of_split(data, split_attribute, target_name):</span>
+    <span class="s1">values, counts = np.unique(data[split_attribute], return_counts=</span><span class="s0">True</span><span class="s1">)</span>
+    <span class="s1">Weighted_Entropy = np.sum([(counts[i] / np.sum(counts)) * calculate_entropy(</span>
+        <span class="s1">data.where(data[split_attribute] == values[i]).dropna()[target_name]) </span><span class="s0">for </span><span class="s1">i </span><span class="s0">in </span><span class="s1">range(len(values))])</span>
+    <span class="s0">return </span><span class="s1">Weighted_Entropy</span>
+
+<span class="s2"># Find the best attribute to split on</span>
+<span class="s2"># Calculates the entropy before the split, the entropy of each split, and</span>
+<span class="s2"># returns the attribute that results in the max. information gain (aka the maximum reduction in entropy)</span>
+<span class="s0">def </span><span class="s1">find_best_attribute(data, target_attribute_name):</span>
+    <span class="s1">entropy_before_split = calculate_entropy(data[target_attribute_name])</span>
+    <span class="s1">information_gains = []</span>
+    <span class="s0">for </span><span class="s1">attribute </span><span class="s0">in </span><span class="s1">data.columns:</span>
+        <span class="s0">if </span><span class="s1">attribute != target_attribute_name:</span>
+            <span class="s1">entropy_of_split = calculate_entropy_of_split(data, attribute, target_attribute_name)</span>
+            <span class="s1">information_gain = entropy_before_split - entropy_of_split</span>
+            <span class="s1">information_gains.append((attribute, information_gain))</span>
+    <span class="s1">best_attribute = max(information_gains, key=</span><span class="s0">lambda </span><span class="s1">x: x[</span><span class="s3">1</span><span class="s1">])</span>
+    <span class="s0">return </span><span class="s1">best_attribute[</span><span class="s3">0</span><span class="s1">]</span>
+</pre>
+</body>
+</html>

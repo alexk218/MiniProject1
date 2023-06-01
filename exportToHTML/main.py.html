@@ -1,0 +1,94 @@
+<html>
+<head>
+<title>main.py</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #0033b3;}
+.s1 { color: #080808;}
+.s2 { color: #8c8c8c; font-style: italic;}
+.s3 { color: #067d17;}
+.s4 { color: #1750eb;}
+</style>
+</head>
+<body bgcolor="#ffffff">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+main.py</font>
+</center></td></tr></table>
+<pre><span class="s0">import </span><span class="s1">pandas </span><span class="s0">as </span><span class="s1">pd</span>
+<span class="s0">from </span><span class="s1">sklearn </span><span class="s0">import </span><span class="s1">tree</span>
+<span class="s0">from </span><span class="s1">sklearn </span><span class="s0">import </span><span class="s1">preprocessing</span>
+<span class="s0">from </span><span class="s1">sklearn.metrics </span><span class="s0">import </span><span class="s1">classification_report</span>
+<span class="s0">import </span><span class="s1">graphviz</span>
+<span class="s0">from </span><span class="s1">utils </span><span class="s0">import </span><span class="s1">find_best_attribute</span>
+
+<span class="s2"># Load and preprocess the training data</span>
+<span class="s1">data = pd.read_csv(</span><span class="s3">'training_dataset.csv'</span><span class="s1">)</span>
+
+<span class="s2"># Finding the first best attribute to split on</span>
+<span class="s2"># This is for illustrative purposes, as the sklearn DecisionTreeClassifier will determine the best splits internally.</span>
+<span class="s1">best_split = find_best_attribute(data, </span><span class="s3">'willwait'</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s3">&quot;Best Attribute to split on: &quot;</span><span class="s1">, best_split)</span>
+
+<span class="s2"># Initialize LabelEncoder</span>
+<span class="s2"># LabelEncoder is a utility class to help normalize labels such that they contain only values between 0 and n_classes-1</span>
+<span class="s1">le = preprocessing.LabelEncoder()</span>
+
+<span class="s2"># Convert all categorical columns to numeric</span>
+<span class="s0">for </span><span class="s1">col </span><span class="s0">in </span><span class="s1">data.columns:</span>
+    <span class="s1">data[col] = le.fit_transform(data[col])</span>
+
+<span class="s2"># Split the dataset into feature vectors (X) and target variable (y)</span>
+<span class="s1">X = data.iloc[:, :-</span><span class="s4">1</span><span class="s1">]</span>
+<span class="s1">y = data.iloc[:, -</span><span class="s4">1</span><span class="s1">]</span>
+
+<span class="s2"># Train the classifier to build the tree (using entropy as the criterion)</span>
+<span class="s1">dtc = tree.DecisionTreeClassifier(criterion=</span><span class="s3">&quot;entropy&quot;</span><span class="s1">)</span>
+<span class="s1">dtc.fit(X, y)</span>
+
+<span class="s2"># Evaluate the classifier's performance on the training data</span>
+<span class="s1">y_pred = dtc.predict(X)</span>
+<span class="s1">print(classification_report(y, y_pred))</span>
+
+<span class="s2"># Visualize the decision tree</span>
+<span class="s2"># export_graphviz exports a decision tree in DOT format</span>
+<span class="s2"># This function generates a GraphViz representation of the decision tree, which is then written into out_file</span>
+<span class="s1">dot_data = tree.export_graphviz(dtc, out_file=</span><span class="s0">None</span><span class="s1">,</span>
+                                <span class="s1">feature_names=data.columns[:-</span><span class="s4">1</span><span class="s1">],</span>
+                                <span class="s1">class_names=le.classes_,</span>
+                                <span class="s1">filled=</span><span class="s0">True</span><span class="s1">, rounded=</span><span class="s0">True</span><span class="s1">)</span>
+<span class="s1">graph = graphviz.Source(dot_data)</span>
+<span class="s1">graph.render(</span><span class="s3">&quot;decision_tree_training_data&quot;</span><span class="s1">)</span>
+
+<span class="s2"># Prompt the user for the test data</span>
+<span class="s1">test_data_filename = input(</span><span class="s3">&quot;Enter the name of the test data file (include .csv): &quot;</span><span class="s1">)</span>
+
+<span class="s2"># Load and preprocess the test data</span>
+<span class="s1">test_data = pd.read_csv(test_data_filename)</span>
+<span class="s0">for </span><span class="s1">col </span><span class="s0">in </span><span class="s1">test_data.columns:</span>
+    <span class="s1">test_data[col] = le.fit_transform(test_data[col])</span>
+
+<span class="s2"># Finding the first best attribute to split on for test data</span>
+<span class="s2"># This is for illustrative purposes, as the sklearn DecisionTreeClassifier will determine the best splits internally.</span>
+<span class="s1">best_split_test = find_best_attribute(test_data, </span><span class="s3">'willwait'</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s3">&quot;Best Attribute to split on: &quot;</span><span class="s1">, best_split_test)</span>
+
+<span class="s2"># Split the test dataset into feature vectors (X_test) and target variable (y_test)</span>
+<span class="s1">X_test = test_data.drop(columns=</span><span class="s3">'willwait'</span><span class="s1">)</span>
+<span class="s1">y_test = test_data[</span><span class="s3">'willwait'</span><span class="s1">]</span>
+
+<span class="s2"># Evaluate the classifier's performance on the test data</span>
+<span class="s1">y_test_pred = dtc.predict(X_test)</span>
+<span class="s1">print(classification_report(y_test, y_test_pred))</span>
+
+<span class="s2"># Visualize the decision tree for the test data</span>
+<span class="s1">dot_data = tree.export_graphviz(dtc, out_file=</span><span class="s0">None</span><span class="s1">,</span>
+                                <span class="s1">feature_names=test_data.columns[:-</span><span class="s4">1</span><span class="s1">],</span>
+                                <span class="s1">class_names=le.classes_,</span>
+                                <span class="s1">filled=</span><span class="s0">True</span><span class="s1">, rounded=</span><span class="s0">True</span><span class="s1">)</span>
+<span class="s1">graph = graphviz.Source(dot_data)</span>
+<span class="s1">graph.render(</span><span class="s3">&quot;decision_tree_test_data&quot;</span><span class="s1">)</span>
+</pre>
+</body>
+</html>

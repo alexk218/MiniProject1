@@ -1,0 +1,38 @@
+<html>
+<head>
+<title>decision_tree_training_data</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #080808;}
+</style>
+</head>
+<body bgcolor="#ffffff">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+decision_tree_training_data</font>
+</center></td></tr></table>
+<pre><span class="s0">digraph Tree {</span>
+<span class="s0">node [shape=box, style=&quot;filled, rounded&quot;, color=&quot;black&quot;, fontname=&quot;helvetica&quot;] ;</span>
+<span class="s0">edge [fontname=&quot;helvetica&quot;] ;</span>
+<span class="s0">0 [label=&quot;pat &lt;= 1.5\nentropy = 1.0\nsamples = 12\nvalue = [6, 6]\nclass = no&quot;, fillcolor=&quot;#ffffff&quot;] ;</span>
+<span class="s0">1 [label=&quot;hun &lt;= 0.5\nentropy = 0.811\nsamples = 8\nvalue = [6, 2]\nclass = no&quot;, fillcolor=&quot;#eeab7b&quot;] ;</span>
+<span class="s0">0 -&gt; 1 [labeldistance=2.5, labelangle=45, headlabel=&quot;True&quot;] ;</span>
+<span class="s0">2 [label=&quot;entropy = 0.0\nsamples = 4\nvalue = [4, 0]\nclass = no&quot;, fillcolor=&quot;#e58139&quot;] ;</span>
+<span class="s0">1 -&gt; 2 ;</span>
+<span class="s0">3 [label=&quot;fri &lt;= 0.5\nentropy = 1.0\nsamples = 4\nvalue = [2, 2]\nclass = no&quot;, fillcolor=&quot;#ffffff&quot;] ;</span>
+<span class="s0">1 -&gt; 3 ;</span>
+<span class="s0">4 [label=&quot;entropy = 0.0\nsamples = 1\nvalue = [1, 0]\nclass = no&quot;, fillcolor=&quot;#e58139&quot;] ;</span>
+<span class="s0">3 -&gt; 4 ;</span>
+<span class="s0">5 [label=&quot;res &lt;= 0.5\nentropy = 0.918\nsamples = 3\nvalue = [1, 2]\nclass = yes&quot;, fillcolor=&quot;#9ccef2&quot;] ;</span>
+<span class="s0">3 -&gt; 5 ;</span>
+<span class="s0">6 [label=&quot;entropy = 0.0\nsamples = 2\nvalue = [0, 2]\nclass = yes&quot;, fillcolor=&quot;#399de5&quot;] ;</span>
+<span class="s0">5 -&gt; 6 ;</span>
+<span class="s0">7 [label=&quot;entropy = 0.0\nsamples = 1\nvalue = [1, 0]\nclass = no&quot;, fillcolor=&quot;#e58139&quot;] ;</span>
+<span class="s0">5 -&gt; 7 ;</span>
+<span class="s0">8 [label=&quot;entropy = 0.0\nsamples = 4\nvalue = [0, 4]\nclass = yes&quot;, fillcolor=&quot;#399de5&quot;] ;</span>
+<span class="s0">0 -&gt; 8 [labeldistance=2.5, labelangle=-45, headlabel=&quot;False&quot;] ;</span>
+<span class="s0">}</span>
+</pre>
+</body>
+</html>
